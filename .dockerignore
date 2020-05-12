@@ -1,0 +1,13 @@
+Dockerfile
+Makefile
+/vendor
+/.git
+/.idea
+/deployment
+!/deployment/local/php/docker-php-entrypoint
+!/deployment/local/php/opcache.ini
+!/deployment/local/php/xdebug.ini
+/tmp
+!/composer.*
+/bootstrap/cache/*
+/storage/logs*
