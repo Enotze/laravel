@@ -21,7 +21,6 @@ app:
   only:
     - branches
   script:
-    - docker version
     - docker build . -f deployment/gitlab/php/Dockerfile
 
 phpunit:
