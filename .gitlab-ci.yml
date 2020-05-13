@@ -32,7 +32,7 @@ phpunit:
   script:
     - rm -rf ./vendor
     - docker build . -f deployment/gitlab/php/Dockerfile -t app_test_image
-    - docker run -v $(pwd):/var/www app_test_image bash -c "cd /var/www/ && cp .env.example /var/www/.env && composer install && php artisan key:generate && php artisan migrate:fresh --database=pgsql --seed && php -d xdebug.remote_enable=0 vendor/phpunit/phpunit/phpunit && rm -rf /vendor"
+    - docker run -v $(pwd):/var/www app_test_image bash -c "cd /var/www/ && cp .env.ci /var/www/.env && composer install && php artisan key:generate && php artisan migrate:fresh --database=test --seed && php -d xdebug.remote_enable=0 vendor/phpunit/phpunit/phpunit; rm -rf /vendor"
 #    - docker run app_test_image bash -c "php -d xdebug.remote_enable=0 vendor/phpunit/phpunit/phpunit"
 #      cp .env.example /var/www/.env;
 #      cd /var/www;
@@ -40,7 +40,7 @@ phpunit:
 #      ./artisan migrate:fresh --database=app_db --seed;
 #      php -d xdebug.remote_enable=0 vendor/phpunit/phpunit/phpunit
   variables:
-    POSTGRES_DB: app_db
-    POSTGRES_USER: app_db
+    POSTGRES_DB: forge_test
+    POSTGRES_USER: forge
     POSTGRES_PASSWORD: ""
     POSTGRES_HOST_AUTH_METHOD: "trust"
