@@ -13,10 +13,6 @@ nginx:
       when: on_success
     - if: '$CI_COMMIT_MESSAGE =~ /\[ci buildNginx\]/i || $BUILD_NGINX'
       when: always
-  services:
-    - docker:19.03.8-dind
-  variables:
-    DOCKER_TLS_CERTDIR: ""
   script:
     - docker build . -f ./deployment/gitlab/nginx/Dockerfile
 
@@ -24,10 +20,6 @@ app:
   stage: build
   only:
     - branches
-  services:
-    - docker:19.03.8-dind
-  variables:
-    DOCKER_TLS_CERTDIR: ""
   script:
     - docker version
     - docker build . -f deployment/gitlab/php/Dockerfile
@@ -37,7 +29,7 @@ phpunit:
   only:
     - branches
   script:
-    - docker build . -f deployment/gitlab/php/Dockerfile -t app_test_image .
+    - docker build . -f deployment/gitlab/php/Dockerfile -t app_test_image
     - docker run app_test_image bash -c "php -d xdebug.remote_enable=0 vendor/phpunit/phpunit/phpunit"
 #      cp .env.example /var/www/.env;
 #      cd /var/www;
