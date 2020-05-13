@@ -14,26 +14,27 @@ nginx:
     - if: '$CI_COMMIT_MESSAGE =~ /\[ci buildNginx\]/i || $BUILD_NGINX'
       when: always
   script:
-    - docker build -f ./deployment/gitlab/nginx/Dockerfile
+    - docker build . -f ./deployment/gitlab/nginx/Dockerfile .
 
 app:
   stage: build
   only:
     - branches
   script:
-    - docker build -f deployment/gitlab/php/Dockerfile
+    - docker build . -f deployment/gitlab/php/Dockerfile
 
 phpunit:
   stage: tests
   only:
     - branches
   script:
-    - docker build -f deployment/gitlab/php/Dockerfile
-    - cp .env.example /var/www/.env
-    - cd /var/www
-    - ./artisan key:generate
-    - ./artisan migrate:fresh --database=app_db --seed
-    - php -d xdebug.remote_enable=0 vendor/phpunit/phpunit/phpunit
+    - docker build . -f deployment/gitlab/php/Dockerfile -t app_test_image .
+    - docker run app_test_image bash -c "php -d xdebug.remote_enable=0 vendor/phpunit/phpunit/phpunit"
+#      cp .env.example /var/www/.env;
+#      cd /var/www;
+#      ./artisan key:generate;
+#      ./artisan migrate:fresh --database=app_db --seed;
+#      php -d xdebug.remote_enable=0 vendor/phpunit/phpunit/phpunit
   services:
     - postgres:9.6.16-alpine
   variables:
