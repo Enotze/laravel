@@ -27,6 +27,8 @@ phpunit:
   stage: tests
   only:
     - branches
+  services:
+    - postgres:9.6.16-alpine
   script:
     - docker build . -f deployment/gitlab/php/Dockerfile -t app_test_image
     - docker run -v $(pwd):/var/www app_test_image bash -c "cd /var/www/ && cp .env.example /var/www/.env && composer install && php artisan key:generate && php artisan migrate:fresh --database=pgsql --seed && php -d xdebug.remote_enable=0 vendor/phpunit/phpunit/phpunit"
@@ -36,9 +38,8 @@ phpunit:
 #      ./artisan key:generate;
 #      ./artisan migrate:fresh --database=app_db --seed;
 #      php -d xdebug.remote_enable=0 vendor/phpunit/phpunit/phpunit
-  services:
-    - postgres:9.6.16-alpine
   variables:
     POSTGRES_DB: app_db
     POSTGRES_USER: app_db
     POSTGRES_PASSWORD: ""
+    POSTGRES_HOST_AUTH_METHOD: "trust"
