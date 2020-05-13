@@ -7,6 +7,7 @@ Makefile
 !/deployment/local/php/docker-php-entrypoint
 !/deployment/local/php/opcache.ini
 !/deployment/local/php/xdebug.ini
+!/deployment/gitlab/php/opcache.ini
 /tmp
 !/composer.*
 /bootstrap/cache/*
