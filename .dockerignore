@@ -8,6 +8,7 @@ Makefile
 !/deployment/local/php/opcache.ini
 !/deployment/local/php/xdebug.ini
 !/deployment/gitlab/php/opcache.ini
+!/deployment/gitlab/nginx/default.conf
 /tmp
 !/composer.*
 /bootstrap/cache/*
