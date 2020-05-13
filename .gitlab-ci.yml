@@ -29,7 +29,7 @@ phpunit:
     - branches
   script:
     - docker build . -f deployment/gitlab/php/Dockerfile -t app_test_image
-    - docker run -v $(pwd):/var/www app_test_image bash -c "cd /var/www/;composer install; php artisan key:generate; php artisan migrate:fresh --database=pgsql --seed; php -d xdebug.remote_enable=0 vendor/phpunit/phpunit/phpunit"
+    - docker run -v $(pwd):/var/www app_test_image bash -c "cd /var/www/ && cp .env.example /var/www/.env && composer install && php artisan key:generate && php artisan migrate:fresh --database=pgsql --seed && php -d xdebug.remote_enable=0 vendor/phpunit/phpunit/phpunit"
 #    - docker run app_test_image bash -c "php -d xdebug.remote_enable=0 vendor/phpunit/phpunit/phpunit"
 #      cp .env.example /var/www/.env;
 #      cd /var/www;
