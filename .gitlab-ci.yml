@@ -35,11 +35,11 @@ phpunit:
     - docker run -d --name db_test_container db_test_image
     - docker build . -f deployment/gitlab/php/Dockerfile -t app_test_image
     - docker run -d --name app_test_container --link db_test_container -v $(pwd):/var/www app_test_image
-    - docker exec -u gitlab-runner:gitlab-runner app_test_container bash -c "cp .env.ci .env"
-    - docker exec -u gitlab-runner:gitlab-runner app_test_container bash -c "composer install"
-    - docker exec -u gitlab-runner:gitlab-runner app_test_container bash -c "php artisan key:generate"
-    - docker exec -u gitlab-runner:gitlab-runner app_test_container bash -c "php artisan migrate:fresh --database=test --seed"
-    - docker exec -u gitlab-runner:gitlab-runner app_test_container bash -c "php -d xdebug.remote_enable=0 vendor/phpunit/phpunit/phpunit"
+    - docker exec -u gitlab-runner app_test_container bash -c "cp .env.ci .env"
+    - docker exec -u gitlab-runner app_test_container bash -c "composer install"
+    - docker exec -u gitlab-runner app_test_container bash -c "php artisan key:generate"
+    - docker exec -u gitlab-runner app_test_container bash -c "php artisan migrate:fresh --database=test --seed"
+    - docker exec -u gitlab-runner app_test_container bash -c "php -d xdebug.remote_enable=0 vendor/phpunit/phpunit/phpunit"
 #    - docker run -v $(pwd):/var/www app_test_image bash -c "cd /var/www/ && cp .env.ci /var/www/.env && composer install && php artisan key:generate && php artisan migrate:fresh --database=test --seed && php -d xdebug.remote_enable=0 vendor/phpunit/phpunit/phpunit;"
 #    - docker run app_test_image bash -c "php -d xdebug.remote_enable=0 vendor/phpunit/phpunit/phpunit"
 #      cp .env.example /var/www/.env;
