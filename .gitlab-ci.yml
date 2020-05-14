@@ -21,7 +21,14 @@ app:
   only:
     - branches
   script:
-    - docker build . -f deployment/gitlab/php/Dockerfile
+    - docker build . -f deployment/gitlab/php/Dockerfile -t app_test_image
+
+db:
+  stage: build
+  only:
+    - branches
+  script:
+    - docker build . -f deployment/gitlab/db/Dockerfile -t db_test_image
 
 phpunit:
   stage: tests
@@ -31,9 +38,7 @@ phpunit:
     - postgres:9.6.16-alpine
   script:
     - docker rm -f app_test_container db_test_container 2> /dev/null || true
-    - docker build . -f deployment/gitlab/db/Dockerfile -t db_test_image
     - docker run -d --name db_test_container db_test_image
-    - docker build . -f deployment/gitlab/php/Dockerfile -t app_test_image
     - sleep 5
     - docker run -d --name app_test_container --link db_test_container app_test_image
     - docker exec app_test_container bash -c "cp .env.ci .env"
