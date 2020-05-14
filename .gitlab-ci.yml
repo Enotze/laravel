@@ -48,8 +48,8 @@ phpunit:
 #      ./artisan key:generate;
 #      ./artisan migrate:fresh --database=app_db --seed;
 #      php -d xdebug.remote_enable=0 vendor/phpunit/phpunit/phpunit
-  after_script:
-    - docker rm -f app_test_container db_test_container 2> /dev/null || true
+#  after_script:
+#    - docker rm -f app_test_container db_test_container 2> /dev/null || true
   variables:
     POSTGRES_DB: forge_test
     POSTGRES_USER: forge
