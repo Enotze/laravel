@@ -25,5 +25,20 @@ ENV PATH="${PATH}:/var/www:/var/www/vendor/bin"
 
 WORKDIR /var/www
 
+COPY composer.*  ./
+
+RUN composer install \
+      --no-interaction \
+      --no-plugins \
+      --no-suggest \
+      --no-scripts \
+      --no-autoloader \
+      --prefer-dist \
+      && rm -rf /root/.composer
+
+COPY ./ .
+
+RUN composer dump-autoload -o
+
 RUN apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
