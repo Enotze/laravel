@@ -34,7 +34,7 @@ phpunit:
     - docker build . -f deployment/gitlab/db/Dockerfile -t db_test_image
     - docker run -d --name db_test_container db_test_image
     - docker build . -f deployment/gitlab/php/Dockerfile -t app_test_image
-    - sleep 1
+    - sleep 5
     - docker run -d --name app_test_container --link db_test_container app_test_image
 #    - docker run -d --name app_test_container --link db_test_container -v $(pwd):/var/www app_test_image
     - docker exec app_test_container bash -c "cp .env.ci .env"
