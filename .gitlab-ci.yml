@@ -30,7 +30,7 @@ phpunit:
   services:
     - postgres:9.6.16-alpine
   script:
-    - docker rm -f app_test_container db_test_container
+    - docker rm -f app_test_container db_test_container 2> /dev/null
     - docker build . -f deployment/gitlab/db/Dockerfile -t db_test_image
     - docker run -d --name db_test_container db_test_image
     - docker build . -f deployment/gitlab/php/Dockerfile -t app_test_image
