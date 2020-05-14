@@ -39,6 +39,7 @@ phpunit:
     - docker exec app_test_container bash -c "cp .env.ci .env"
 #    - docker exec -u 994:993 app_test_container bash -c "composer install"
     - docker exec app_test_container bash -c "php artisan key:generate"
+    - sleep 1
     - docker exec app_test_container bash -c "php artisan migrate:fresh --database=test --seed"
     - docker exec app_test_container bash -c "php -d xdebug.remote_enable=0 vendor/phpunit/phpunit/phpunit"
 #    - docker run -v $(pwd):/var/www app_test_image bash -c "cd /var/www/ && cp .env.ci /var/www/.env && composer install && php artisan key:generate && php artisan migrate:fresh --database=test --seed && php -d xdebug.remote_enable=0 vendor/phpunit/phpunit/phpunit;"
