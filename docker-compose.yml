@@ -35,3 +35,9 @@ services:
     volumes:
       - ./tmp/db:/var/lib/postgresql/data
 
+  node:
+    image: node:14.3-alpine
+    volumes:
+      - ./:/var/www
+    working_dir: /var/www
+    tty: true
