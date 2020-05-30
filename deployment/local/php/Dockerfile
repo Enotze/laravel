@@ -12,7 +12,7 @@ RUN apt-get update \
           bcmath \
           opcache
 
-COPY /deployment/gitlab/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
+COPY opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
 #composer
 RUN curl -sS https://getcomposer.org/installer | php -- \
@@ -23,7 +23,7 @@ RUN composer global require hirak/prestissimo --no-plugins --no-scripts
 
 #xdebug
 RUN pecl install xdebug-beta
-COPY /deployment/gitlab/php/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
+COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 RUN XDEBUG_REMOTE_HOST=$(if ping -q -c1 host.docker.internal > /dev/null 2>&1; then echo "host.docker.internal"; else echo "172.17.0.1"; fi); \
     echo "xdebug.remote_host=${XDEBUG_REMOTE_HOST}" > /usr/local/etc/php/conf.d/xdebug_remote_host.ini
 
