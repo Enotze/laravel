@@ -30,6 +30,17 @@ db:
   script:
     - docker build . -f deployment/gitlab/db/Dockerfile -t db_test_image
 
+node:
+  stage: build
+  image:
+    name: node:14.3-alpine
+  only:
+    - branches
+  script:
+    - node yarn install
+    - node npm rebuild node-sass --force
+    - node yarn run prod
+
 phpunit:
   stage: tests
   only:
