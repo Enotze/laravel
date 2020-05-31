@@ -32,8 +32,6 @@ db:
 
 node:
   stage: build
-  image:
-    name: node:14.3-alpine
   rules:
     - if: '$CI_COMMIT_BRANCH'
       changes:
@@ -45,9 +43,7 @@ node:
     - if: '$CI_COMMIT_MESSAGE =~ /\[ci buildNode\]/i || $BUILD_NODE'
       when: always
   script:
-    - npm rebuild node-sass --force
-    - yarn install
-    - yarn run prod
+    - docker build . -f deployment/gitlab/node/Dockerfile -t node_test_image
 
 phpunit:
   stage: tests
