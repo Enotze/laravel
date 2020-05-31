@@ -33,7 +33,7 @@ db:
 node:
   stage: build
   image:
-    name: node:14.3-alpine
+    name: tetraweb/php
   only:
     - branches
   script:
