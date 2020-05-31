@@ -37,9 +37,9 @@ node:
   only:
     - branches
   script:
-    - yarn install
+    - npm install
     - npm rebuild node-sass --force
-    - yarn run prod
+    - npm run prod
 
 phpunit:
   stage: tests
