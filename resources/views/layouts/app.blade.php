@@ -19,8 +19,8 @@
     <!-- Styles -->
     <link href="{{ mix('css/app.css', 'build') }}" rel="stylesheet">
 </head>
-<body>
-    <div id="app">
+<body id="app">
+    <header>
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/') }}">
@@ -71,10 +71,20 @@
                 </div>
             </div>
         </nav>
+    </header>
 
-        <main class="py-4">
+    <main class="app-content py-3">
+        <div class="container">
             @yield('content')
-        </main>
-    </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="border-top pt-3">
+                <p>&copy; {{ date('Y') }} - Blog</p>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
