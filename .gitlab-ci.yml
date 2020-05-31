@@ -33,13 +33,13 @@ db:
 node:
   stage: build
   image:
-    name: tetraweb/php
+    name: node:14.3-alpine
   only:
     - branches
   script:
-    - npm install
     - npm rebuild node-sass --force
-    - npm run prod
+    - yarn install
+    - yarn run prod
 
 phpunit:
   stage: tests
