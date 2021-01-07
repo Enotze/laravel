@@ -18,20 +18,15 @@ spec:
         # Create the shared files volume to be used in both containers
         - name: shared-files
           emptyDir: {}
-        - name: nginx-config-volume
-          configMap:
-            name: nginx-config-map
       containers:
         - name: nginx
-          image: nginx:alpine
+          #image: $(minikube ip):5000/nginx:base
+          image: 192.168.49.2:5000/nginx:base
           ports:
             - containerPort: 80
           volumeMounts:
             - name: shared-files
               mountPath: /var/www/html
-            - name: nginx-config-volume
-              mountPath: /etc/nginx/nginx.conf
-              subPath: nginx.conf
         - name: php-fpm
           image: php:7.4-fpm
           ports:
