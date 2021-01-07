@@ -12,7 +12,7 @@ RUN apt-get update \
           bcmath \
           opcache
 
-COPY /deployment/gitlab/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
+COPY /deployment/dockerfiles/gitlab/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 
 #composer
 RUN curl -sS https://getcomposer.org/installer | php -- \

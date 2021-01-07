@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment
+  labels:
+    app: web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      volumes:
+        # Create the shared files volume to be used in both containers
+        - name: shared-files
+          emptyDir: {}
+        - name: nginx-config-volume
+          configMap:
+            name: nginx-config-map
+      containers:
+        - name: nginx
+          image: nginx:alpine
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: shared-files
+              mountPath: /var/www/html
+            - name: nginx-config-volume
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+        - name: php-fpm
+          image: php:7.4-fpm
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: shared-files
+              mountPath: /var/www/html
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/sh", "-c", "echo '<?php phpinfo(); ?>' >> /var/www/html/index.php"]

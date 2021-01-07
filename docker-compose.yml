@@ -3,7 +3,7 @@ services:
 
   app:
     build:
-      context: deployment/local/php
+      context: deployment/dockerfiles/local/php
     working_dir: /var/www
     depends_on:
       - db
