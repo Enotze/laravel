@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Auth::routes(['verify' => true]);
+//Auth::routes(['verify' => true]);
 
-Route::get('/', 'HomeController@index')->name('home');
+Route::get('/', function () {
+    die('webpage');
+})->name('home');
+//Route::get('/', 'HomeController@index')->name('home');

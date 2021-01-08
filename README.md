@@ -42,3 +42,15 @@ minikube start
 docker build -t 192.168.49.2:5000/nginx:base -f ./deployment/dockerfiles/gitlab/nginx/Dockerfile ./deployment/dockerfiles/gitlab/nginx
 docker push 192.168.49.2:5000/nginx:base
 ```
+
+### Консольные команды для создания образов, которые после используются при деплое в kubernetes
+```
+docker image rm 192.168.49.2:5000/app:base
+docker image rm 192.168.49.2:5000/nginx:base
+docker build -f ./deployment/dockerfiles/gitlab/php/Dockerfile -t 192.168.49.2:5000/app:base .
+docker build -f ./deployment/dockerfiles/gitlab/nginx/Dockerfile -t 192.168.49.2:5000/nginx:base .
+docker push 192.168.49.2:5000/app:base
+docker push 192.168.49.2:5000/nginx:base
+
+docker image rm 192.168.49.2:5000/app:base && docker image rm 192.168.49.2:5000/nginx:base && docker build -f ./deployment/dockerfiles/gitlab/php/Dockerfile -t 192.168.49.2:5000/app:base . && docker build -f ./deployment/dockerfiles/gitlab/nginx/Dockerfile -t 192.168.49.2:5000/nginx:base . && docker push 192.168.49.2:5000/app:base && docker push 192.168.49.2:5000/nginx:base
+```

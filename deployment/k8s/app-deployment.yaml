@@ -15,26 +15,41 @@ spec:
         app: web
     spec:
       volumes:
-        # Create the shared files volume to be used in both containers
-        - name: shared-files
+        - name: public-files
           emptyDir: {}
       containers:
         - name: nginx
+          imagePullPolicy: Always
           #image: $(minikube ip):5000/nginx:base
           image: 192.168.49.2:5000/nginx:base
           ports:
             - containerPort: 80
+          readinessProbe:
+            tcpSocket:
+              port: 80
           volumeMounts:
-            - name: shared-files
+            - name: public-files
               mountPath: /var/www/html
-        - name: php-fpm
-          image: php:7.4-fpm
-          ports:
-            - containerPort: 80
-          volumeMounts:
-            - name: shared-files
-              mountPath: /var/www/html
+        - name: app
+          imagePullPolicy: Always
+          image: 192.168.49.2:5000/app:base
           lifecycle:
             postStart:
               exec:
-                command: ["/bin/sh", "-c", "echo '<?php phpinfo(); ?>' >> /var/www/html/index.php"]
+                command:
+                  - "sh"
+                  - "-c"
+                  - >
+                    artisan optimize;
+                    rsync -av /var/www/. /var/www/html --exclude /var/www/html;
+          ports:
+            - containerPort: 9000
+          readinessProbe:
+            tcpSocket:
+              port: 9000
+          volumeMounts:
+            - name: public-files
+              mountPath: /var/www/html
+          env:
+            - name: APP_KEY
+              value: "base64:TIUStF7JhiZTIHrbxnEiQZ/IBDxkYsoQTdkHMhVUjsQ="
