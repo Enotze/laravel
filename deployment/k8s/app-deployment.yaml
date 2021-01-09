@@ -40,8 +40,9 @@ spec:
                   - "sh"
                   - "-c"
                   - >
-                    artisan optimize;
                     rsync -av /var/www/. /var/www/html --exclude /var/www/html;
+                    cd /var/www/html;
+                    artisan optimize;
           ports:
             - containerPort: 9000
           readinessProbe:
@@ -53,3 +54,7 @@ spec:
           env:
             - name: APP_KEY
               value: "base64:TIUStF7JhiZTIHrbxnEiQZ/IBDxkYsoQTdkHMhVUjsQ="
+            - name: LOG_CHANNEL
+              value: "stderr"
+            - name: APP_BASE_PATH
+              value: "/var/www/html"

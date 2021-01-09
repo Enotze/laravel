@@ -54,3 +54,8 @@ docker push 192.168.49.2:5000/nginx:base
 
 docker image rm 192.168.49.2:5000/app:base && docker image rm 192.168.49.2:5000/nginx:base && docker build -f ./deployment/dockerfiles/gitlab/php/Dockerfile -t 192.168.49.2:5000/app:base . && docker build -f ./deployment/dockerfiles/gitlab/nginx/Dockerfile -t 192.168.49.2:5000/nginx:base . && docker push 192.168.49.2:5000/app:base && docker push 192.168.49.2:5000/nginx:base
 ```
+
+### Удаляет pod и deployment приложения и создает заново
+```
+k replace --force -f ./deployment/k8s/app-deployment.yaml 
+```
