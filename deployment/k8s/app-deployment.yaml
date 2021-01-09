@@ -40,9 +40,11 @@ spec:
                   - "sh"
                   - "-c"
                   - >
-                    rsync -av /var/www/. /var/www/html --exclude /var/www/html;
+                    rsync -av /var/www/. /var/www/html --exclude 'html';
+                    chown www-data:www-data -R /var/www/html;
                     cd /var/www/html;
                     artisan optimize;
+                    artisan migrate --force;
           ports:
             - containerPort: 9000
           readinessProbe:
@@ -58,3 +60,15 @@ spec:
               value: "stderr"
             - name: APP_BASE_PATH
               value: "/var/www/html"
+            - name: DB_CONNECTION
+              value: "pgsql"
+            - name: DB_HOST
+              value: "192.168.49.2"
+            - name: DB_PORT
+              value: "30432"
+            - name: DB_DATABASE
+              value: "app_db"
+            - name: DB_USERNAME
+              value: "db_user"
+            - name: DB_PASSWORD
+              value: "db_pass"

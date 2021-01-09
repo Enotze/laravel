@@ -57,5 +57,9 @@ docker image rm 192.168.49.2:5000/app:base && docker image rm 192.168.49.2:5000/
 
 ### Удаляет pod и deployment приложения и создает заново
 ```
-k replace --force -f ./deployment/k8s/app-deployment.yaml 
+k replace --force -f ./deployment/k8s/app-deployment.yaml
+```
+### Аккуратно пересоздает (но почему-то не прокидывает новые env, если файл изменили)
+```
+k rollout restart -f postgres-deployment.yaml
 ```
