@@ -19,8 +19,6 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
     --filename=composer \
     --install-dir=/usr/local/bin
 
-RUN composer global require hirak/prestissimo --no-plugins --no-scripts
-
 #xdebug
 RUN pecl install xdebug-beta
 COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini

@@ -1,10 +1,10 @@
-up:
+up: memory
 	docker-compose up -d
 
 down:
 	docker-compose down
 
-build:
+build: memory
 	docker-compose up --build -d
 
 assets-install:
@@ -28,3 +28,6 @@ perm:
 
 artisan:
 	docker-compose exec app artisan
+
+memory:
+	sudo sysctl -w vm.max_map_count=262144
