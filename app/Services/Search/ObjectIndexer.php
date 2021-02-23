@@ -20,6 +20,26 @@ class ObjectIndexer
         $this->client = $client;
     }
 
+    public function disableRefreshInterval():void
+    {
+        $this->client->indices()->putSettings([
+            'index' => self::INDEX,
+            'body' => [
+                'index' => ['refresh_interval' => '-1']
+            ],
+        ]);
+    }
+
+    public function enableRefreshInterval():void
+    {
+        $this->client->indices()->putSettings([
+            'index' => self::INDEX,
+            'body' => [
+                'index' => ['refresh_interval' => '1s']
+            ],
+        ]);
+    }
+
     public function clear(): void
     {
         $this->client->deleteByQuery([

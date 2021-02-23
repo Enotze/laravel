@@ -26,6 +26,7 @@ class ReindexCommand extends Command
         BenchConsole::start();
 
         $this->indexer->clear();
+        $this->indexer->disableRefreshInterval();
 
         BenchConsole::mark('search:reindex - clear');
 
@@ -35,6 +36,8 @@ class ReindexCommand extends Command
             ->chunk(1000, function (Collection $objects) {
                 $this->indexer->bulkIndex($objects);
             });
+
+        $this->indexer->enableRefreshInterval();
 
         BenchConsole::mark('search:reindex - index');
 
