@@ -1,12 +1,11 @@
 <?php
 
-
 namespace App\Services\Search;
-
 
 use App\Models\ObjectRecord;
 use Carbon\Carbon;
 use Elasticsearch\Client;
+use Illuminate\Support\Collection;
 use stdClass;
 
 class ObjectIndexer
@@ -40,19 +39,28 @@ class ObjectIndexer
             'index' => self::INDEX,
             'type' => self::INDEX_TYPE,
             'id' => $object->id,
-            'body' => [
-                'id' => $object->id,
-                'name' => $object->name,
-                'code' => $object->code,
-                'object_type_id' => $object->object_type_id,
-                'level' => $object->level,
-                'parent_id' => $object->parent_id,
-                'parents' => $this->getParents($object),
-                'created_at' => $this->getDate($object->created_at),
-                'updated_at' => $this->getDate($object->updated_at),
-                'deleted_at' => $this->getDate($object->deleted_at),
-            ],
+            'body' => $this->convertObject($object),
         ]);
+    }
+
+    /**
+     * @param Collection|ObjectRecord[] $objects
+     */
+    public function bulkIndex(Collection $objects): void
+    {
+        $data['body'] = $objects->map(function (ObjectRecord $object) {
+            $params[] = [
+                'index' => [
+                    '_index' => self::INDEX,
+                    '_type' => self::INDEX_TYPE,
+                    '_id' => $object->id,
+                ]
+            ];
+            $params[] = $this->convertObject($object);
+            return $params;
+        })->collapse()->toArray();
+
+        $this->client->bulk($data);
     }
 
     public function remove(ObjectRecord $object): void
@@ -64,19 +72,24 @@ class ObjectIndexer
         ]);
     }
 
-    private function getParents(ObjectRecord $object): array
-    {
-        $parents = [];
-        if ($parent = $object->allParent) {
-            do {
-                $parents[] = $parent->id;
-            } while ($parent = $parent->allParent);
-        }
-        return $parents;
-    }
-
     protected function getDate(?Carbon $date): ?string
     {
         return $date ? $date->format(DATE_ATOM) : null;
+    }
+
+    protected function convertObject(ObjectRecord $object): array
+    {
+        return [
+            'id' => $object->id,
+            'name' => $object->name,
+            'code' => $object->code,
+            'object_type_id' => $object->object_type_id,
+            'level' => $object->level,
+            'parent_id' => $object->parent_id,
+            'parents' => $object->parentIds,
+            'created_at' => $this->getDate($object->created_at),
+            'updated_at' => $this->getDate($object->updated_at),
+            'deleted_at' => $this->getDate($object->deleted_at),
+        ];
     }
 }

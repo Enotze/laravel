@@ -63,3 +63,9 @@ k replace --force -f ./deployment/k8s/app-deployment.yaml
 ```
 k rollout restart -f postgres-deployment.yaml
 ```
+
+##ELASTICSEARCH
+755к записей
+* cursor(), one row indexing - 1h 15m 22s
+* chunk(), bulk with batches indexing - 0h 02m 15s
+* cursor(), bulk with batches indexing - 0h 18m 04s

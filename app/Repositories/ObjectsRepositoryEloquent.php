@@ -130,22 +130,27 @@ class ObjectsRepositoryEloquent
                         $parent_column = $parent_iter == 0 ? 'objects' : "parent{$parent_iter}";
                     }
 
-                    if (empty($object_type_ids)) {
-                        $select_string .= 'NULl ';
-                        $parent_iter++;
-                        continue;
+                    if (!empty($object_types)) {
+                        if (empty($object_type_ids)) {
+                            $select_string .= 'NULl ';
+                            $parent_iter++;
+                            continue;
+                        } else {
+                            $select_string .=
+                                "CASE WHEN {$parent_column}.object_type_id NOT IN ({$object_type_ids}) THEN NULL ELSE ";
+                        }
+
+                        if ($select->type == SelectObjectParents::TYPE_ID) {
+                            $select_string .= "{$parent_column}.id END ";
+                        } elseif ($select->type == SelectObjectParents::TYPE_NAME) {
+                            $select_string .=
+                                "CASE WHEN {$parent_column}.display_name = '' THEN {$parent_column}.name " .
+                                "ELSE {$parent_column}.display_name END END ";
+                        }
                     } else {
-                        $select_string .=
-                            "CASE WHEN {$parent_column}.object_type_id NOT IN ({$object_type_ids}) THEN NULL ELSE ";
+                        $select_string .= "{$parent_column}.id ";
                     }
 
-                    if ($select->type == SelectObjectParents::TYPE_ID) {
-                        $select_string .= "{$parent_column}.id END ";
-                    } elseif ($select->type == SelectObjectParents::TYPE_NAME) {
-                        $select_string .=
-                            "CASE WHEN {$parent_column}.display_name = '' THEN {$parent_column}.name " .
-                            "ELSE {$parent_column}.display_name END END ";
-                    }
                     $parent_iter++;
                 }
             }
@@ -165,8 +170,12 @@ class ObjectsRepositoryEloquent
         foreach ($selects as $select) {
             $objectTypeCodes = array_merge(
                 $objectTypeCodes,
-                $select->objectTypeCodes
+                $select->objectTypeCodes ?? []
             );
+        }
+
+        if (empty($objectTypeCodes)) {
+            return [];
         }
 
         /** @var ObjectType[] $objectTypes */

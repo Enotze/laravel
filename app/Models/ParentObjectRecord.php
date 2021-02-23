@@ -3,10 +3,12 @@
 namespace App\Models;
 
 /**
- * @property $living_complex_id
- * @property $corpus_id
- * @property $section_id
- * @property $floor_id
+ * @property $lvl_1_id
+ * @property $lvl_2_id
+ * @property $lvl_3_id
+ * @property $lvl_4_id
+ *
+ * @property-read array $parentIds
  */
 class ParentObjectRecord extends ObjectRecord
 {
@@ -16,4 +18,14 @@ class ParentObjectRecord extends ObjectRecord
         'lvl_3_id',
         'lvl_4_id',
     ];
+
+    public function getParentIdsAttribute(): array
+    {
+        return array_filter([
+            $this->lvl_1_id,
+            $this->lvl_2_id,
+            $this->lvl_3_id,
+            $this->lvl_4_id,
+        ]);
+    }
 }

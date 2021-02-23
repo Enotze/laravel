@@ -6,11 +6,11 @@ namespace App\Models;
 
 use App\Repositories\ObjectsRepository;
 use Carbon\Carbon;
+use Eloquent;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
 
 /**
  * @property $id
@@ -25,6 +25,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *
  * @property-read Collection|ObjectRecord $parent
  * @property-read Collection|ObjectRecord $allParent
+ * @property-read Collection|ParentObjectRecord $parentsData
+ *
+ * @property-read array $parentIds
+ *
+ * @mixin Eloquent
  */
 class ObjectRecord extends Model
 {
@@ -46,14 +51,14 @@ class ObjectRecord extends Model
         'parent_id',
     ];
 
-    public function getParent(): HasOne
+    public function parent(): HasOne
     {
         return $this->hasOne(static::class, 'id', 'parent_id');
     }
 
-    public function getAllParent(): HasOne
+    public function allParent(): HasOne
     {
-        return $this->getParent()->withTrashed()->with('allParent');
+        return $this->parent()->withTrashed()->with('allParent');
     }
 
     public function parentsData(bool $with_inactive = false): HasOne
@@ -64,6 +69,11 @@ class ObjectRecord extends Model
         $repository->parentsDataQuery($query);
 
         return $query;
+    }
+
+    public function getParentIdsAttribute(): array
+    {
+        return (array)($this->parentsData->parentIds ?? []);
     }
 
 //    protected $casts = [

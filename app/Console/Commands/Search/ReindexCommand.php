@@ -3,8 +3,11 @@
 namespace App\Console\Commands\Search;
 
 use App\Models\ObjectRecord;
+use App\Services\Bench\BenchConsole;
 use App\Services\Search\ObjectIndexer;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
 
 class ReindexCommand extends Command
 {
@@ -20,11 +23,23 @@ class ReindexCommand extends Command
 
     public function handle(): bool
     {
+        BenchConsole::start();
+
         $this->indexer->clear();
 
-        foreach (ObjectRecord::withTrashed()->orderBy('id')->cursor() as $advert) {
-            $this->indexer->index($advert);
-        }
+        BenchConsole::mark('search:reindex - clear');
+
+        ObjectRecord::withTrashed()
+            ->with('parentsData')
+            ->orderBy('id')
+            ->chunk(1000, function (Collection $objects) {
+                $this->indexer->bulkIndex($objects);
+            });
+
+        BenchConsole::mark('search:reindex - index');
+
+        BenchConsole::stop();
+        Log::info('search:reindex', BenchConsole::getStats());
 
         return true;
     }
